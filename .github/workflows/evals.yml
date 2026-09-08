@@ -1,0 +1,41 @@
+# Runs the eval suite when prompts, tools or evals change. Needs provider keys as repository secrets.
+name: Evals
+
+on:
+  pull_request:
+    paths: ["src/prompts/**", "src/tools/**", "src/agents/**", "evals/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.fork == false
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      AI_MODEL: anthropic/claude-sonnet-5
+      HTTP_FETCH_ALLOWED_HOSTS: example.com
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: extractions/setup-just@v3
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+      - run: corepack enable
+      - run: just setup
+      - id: gate
+        run: echo "run=$([ -n "$ANTHROPIC_API_KEY" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - if: steps.gate.outputs.run == 'true'
+        run: just eval
+      - if: steps.gate.outputs.run == 'true'
+        name: Fail under 95% pass rate
+        run: |
+          PASS=$(jq '.results.stats.successes' evals/output/results.json)
+          TOTAL=$(jq '.results.stats.successes + .results.stats.failures' evals/output/results.json)
+          echo "pass=$PASS total=$TOTAL"
+          [ "$TOTAL" -gt 0 ] && [ $((PASS * 100 / TOTAL)) -ge 95 ]

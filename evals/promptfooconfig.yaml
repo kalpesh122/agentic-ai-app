@@ -1,0 +1,19 @@
+# Evals for the assistant. `just eval` runs the suite against the real agent (needs provider keys).
+description: agentic-ai-app assistant evals
+
+prompts:
+  - '{{prompt}}'
+
+providers:
+  # Our own agent, driven through the built code so evals exercise tools + guardrails, not a bare model.
+  - id: file://evals/agent-provider.mjs
+    label: assistant
+
+tests: file://evals/golden/*.yaml
+
+defaultTest:
+  options:
+    # Judge with a different model family than the system under test to blunt self-preference bias.
+    provider: openai:responses:gpt-5.6-terra
+
+outputPath: evals/output/results.json

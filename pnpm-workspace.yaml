@@ -1,0 +1,12 @@
+allowBuilds:
+  esbuild: true
+  protobufjs: true
+  "@biomejs/biome": true
+  # transitive deps of promptfoo; native builds are not needed for evals
+  "@playwright/browser-chromium": false
+  "@swc/core": false
+  onnxruntime-node: false
+  sharp: false
+  better-sqlite3: true
+# Supply-chain cooldown in minutes; the AI SDK ships several times a day, so 24h blocks pinned versions
+minimumReleaseAge: 60
