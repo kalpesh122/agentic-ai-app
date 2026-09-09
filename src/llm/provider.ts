@@ -1,13 +1,18 @@
 import { createAnthropic } from '@ai-sdk/anthropic';
+import { createDeepSeek } from '@ai-sdk/deepseek';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createGateway, type EmbeddingModel, type LanguageModel } from 'ai';
 import type { Env } from '../env.ts';
 import { parseModelId } from './models.ts';
 
-type Keys = Pick<
+export type Keys = Pick<
   Env,
-  'ANTHROPIC_API_KEY' | 'OPENAI_API_KEY' | 'GOOGLE_GENERATIVE_AI_API_KEY' | 'AI_GATEWAY_API_KEY'
+  | 'ANTHROPIC_API_KEY'
+  | 'OPENAI_API_KEY'
+  | 'GOOGLE_GENERATIVE_AI_API_KEY'
+  | 'DEEPSEEK_API_KEY'
+  | 'AI_GATEWAY_API_KEY'
 >;
 
 /**
@@ -27,6 +32,9 @@ export function resolveLanguageModel(full: string, keys: Keys): LanguageModel {
       return createGoogleGenerativeAI({
         apiKey: required(keys.GOOGLE_GENERATIVE_AI_API_KEY, 'GOOGLE_GENERATIVE_AI_API_KEY'),
       })(id);
+    case 'deepseek':
+      // OpenAI-compatible API with automatic prompt caching; cache hits appear in provider metadata.
+      return createDeepSeek({ apiKey: required(keys.DEEPSEEK_API_KEY, 'DEEPSEEK_API_KEY') })(id);
   }
 }
 
@@ -44,8 +52,9 @@ export function resolveEmbeddingModel(full: string, keys: Keys): EmbeddingModel 
         apiKey: required(keys.GOOGLE_GENERATIVE_AI_API_KEY, 'GOOGLE_GENERATIVE_AI_API_KEY'),
       }).embedding(id);
     case 'anthropic':
+    case 'deepseek':
       throw new Error(
-        'Anthropic does not offer embedding models; use openai/… or google/… for AI_EMBEDDING_MODEL',
+        `${provider} does not offer embedding models; use openai/… or google/… for AI_EMBEDDING_MODEL`,
       );
   }
 }

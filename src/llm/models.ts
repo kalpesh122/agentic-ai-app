@@ -1,5 +1,5 @@
 /** Model registry: ids we support and their list prices (USD per 1M tokens) for cost accounting. */
-export type Provider = 'anthropic' | 'openai' | 'google';
+export type Provider = 'anthropic' | 'openai' | 'google' | 'deepseek';
 
 export interface ModelInfo {
   provider: Provider;
@@ -72,8 +72,13 @@ export function parseModelId(full: string): ParsedModelId {
   const [provider, ...rest] = full.split('/');
   const id = rest.join('/');
   if (!provider || !id) throw new Error(`Model id must be "provider/model", got "${full}"`);
-  if (provider !== 'anthropic' && provider !== 'openai' && provider !== 'google') {
-    throw new Error(`Unsupported provider "${provider}" (anthropic | openai | google)`);
+  if (
+    provider !== 'anthropic' &&
+    provider !== 'openai' &&
+    provider !== 'google' &&
+    provider !== 'deepseek'
+  ) {
+    throw new Error(`Unsupported provider "${provider}" (anthropic | openai | google | deepseek)`);
   }
   return { provider, id, full };
 }

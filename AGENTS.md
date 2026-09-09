@@ -6,7 +6,7 @@ and `.github/copilot-instructions.md` link to it. Keep it under 150 lines: a map
 ## What this repository is
 
 A production-grade **LLM agent application** boilerplate in TypeScript: **AI SDK v7** (`ToolLoopAgent`,
-`Output.object`, streaming) over **Claude / GPT / Gemini** with one provider switch; a **tool registry**
+`Output.object`, streaming) over **Claude / GPT / Gemini / DeepSeek** with one provider switch; a **tool registry**
 (zod schemas, allowlist, approval gate for destructive tools, untrusted-output wrapping); **guardrails**
 (input size, per-request cost cap, output validation); **long-term memory** on Postgres + pgvector with
 hybrid retrieval (vector + full-text, RRF); **evals** with promptfoo; **OpenTelemetry/Langfuse** tracing;

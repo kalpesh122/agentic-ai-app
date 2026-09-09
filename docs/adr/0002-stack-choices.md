@@ -9,7 +9,7 @@ An agent application boilerplate has to survive fast-moving SDKs, work with more
 
 ## Decision
 
-AI SDK v7 (`ToolLoopAgent`, `Output.object`, UI message streams) as the provider-agnostic layer with direct `@ai-sdk/anthropic|openai|google` providers and an optional Vercel AI Gateway path; a priced model registry driving a per-request cost cap implemented as a `stopWhen` condition; SDK-agnostic `defineTool` definitions bridged to both the AI SDK and MCP; approval gating and untrusted-output wrapping in the registry; Postgres + pgvector with hybrid retrieval (cosine + full-text, RRF) and contextual chunk embedding; promptfoo evals through the real agent; OpenTelemetry with an optional Langfuse span processor; Hono for HTTP; the Anthropic SDK kept for a native prompt-caching example.
+AI SDK v7 (`ToolLoopAgent`, `Output.object`, UI message streams) as the provider-agnostic layer with direct `@ai-sdk/anthropic|openai|google|deepseek` providers and an optional Vercel AI Gateway path; a priced model registry driving a per-request cost cap implemented as a `stopWhen` condition; SDK-agnostic `defineTool` definitions bridged to both the AI SDK and MCP; approval gating and untrusted-output wrapping in the registry; Postgres + pgvector with hybrid retrieval (cosine + full-text, RRF) and contextual chunk embedding; promptfoo evals through the real agent; OpenTelemetry with an optional Langfuse span processor; Hono for HTTP; the Anthropic SDK kept for a native prompt-caching example.
 
 ## Alternatives considered
 

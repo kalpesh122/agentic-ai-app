@@ -2,7 +2,7 @@
 
 A production-grade **LLM agent application** boilerplate in TypeScript, with the [agentic-kit](https://github.com/kalpesh122/agentic-kit) built in: one `AGENTS.md` every AI coding agent reads, skills that encode how to add tools, eval cases, and models, hooks that block destructive commands and force `just check` to pass before an agent can say "done", and a multi-model (Claude + Codex + Gemini) code-review council in CI.
 
-What it gives you on day one: an assistant agent on **AI SDK v7** (`ToolLoopAgent`, streaming, `Output.object` structured output) that runs on **Claude, GPT, or Gemini** through one `provider/model` switch (or Vercel AI Gateway); a **tool registry** where every tool is a zod-typed definition with an allowlist, an **approval gate** for destructive actions, and **untrusted-output wrapping** against prompt injection; **guardrails** for input size, a per-request **cost cap** (with a priced model registry), and output validation; **long-term memory** on Postgres + pgvector with hybrid retrieval (vector + full-text fused by RRF); **evals** with promptfoo driven through the real agent; **OpenTelemetry/Langfuse** tracing; and the same tools exposed as an **MCP server**. Tests run fully offline with the SDK's mock models.
+What it gives you on day one: an assistant agent on **AI SDK v7** (`ToolLoopAgent`, streaming, `Output.object` structured output) that runs on **Claude, GPT, Gemini, or DeepSeek** through one `provider/model` switch (or Vercel AI Gateway); a **tool registry** where every tool is a zod-typed definition with an allowlist, an **approval gate** for destructive actions, and **untrusted-output wrapping** against prompt injection; **guardrails** for input size, a per-request **cost cap** (with a priced model registry), and output validation; **long-term memory** on Postgres + pgvector with hybrid retrieval (vector + full-text fused by RRF); **evals** with promptfoo driven through the real agent; **OpenTelemetry/Langfuse** tracing; and the same tools exposed as an **MCP server**. Tests run fully offline with the SDK's mock models.
 
 ## 60-second quickstart
 
@@ -55,8 +55,10 @@ Errors are `{ error: { code, message, requestId } }`: `validation_error` (422), 
 | `openai/gpt-5.6-terra` | $2 / $12 |
 | `google/gemini-3.1-pro-preview` | $2 / $12 |
 | `google/gemini-3.8-flash` | $0.75 / $3.75 |
+| `deepseek/deepseek-v4-flash` | $0.44 / $1.32 (peak, cache miss; off-peak half, cache hits $0.014) |
+| `deepseek/deepseek-v4-pro` | $1.32 / $3.96 (peak, cache miss; off-peak half, cache hits $0.044) |
 
-Set `AI_MODEL=provider/model`. With `AI_GATEWAY_API_KEY` set, every model routes through Vercel AI Gateway with the same ids. Embeddings use `AI_EMBEDDING_MODEL` (OpenAI or Google). Prices drive the per-request `MAX_COST_USD` cap, which is a `stopWhen` condition on the agent loop.
+Set `AI_MODEL=provider/model`. With `AI_GATEWAY_API_KEY` set, every model routes through Vercel AI Gateway with the same ids. Embeddings use `AI_EMBEDDING_MODEL` (OpenAI or Google; Anthropic and DeepSeek have no embedding models). DeepSeek runs over its OpenAI-compatible API through `@ai-sdk/deepseek` with `DEEPSEEK_API_KEY`; the registry pins its peak cache-miss rates so the cost cap never under-counts. Prices drive the per-request `MAX_COST_USD` cap, which is a `stopWhen` condition on the agent loop.
 
 ## Safety model
 

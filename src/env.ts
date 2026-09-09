@@ -24,6 +24,7 @@ const schema = z
     ANTHROPIC_API_KEY: z.string().optional(),
     OPENAI_API_KEY: z.string().optional(),
     GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
+    DEEPSEEK_API_KEY: z.string().optional(),
     AI_GATEWAY_API_KEY: z.string().optional(),
     MAX_INPUT_CHARS: z.coerce.number().int().positive().default(20_000),
     MAX_STEPS: z.coerce.number().int().min(1).max(50).default(8),
@@ -44,6 +45,7 @@ const schema = z
     ANTHROPIC_API_KEY: e.ANTHROPIC_API_KEY || undefined,
     OPENAI_API_KEY: e.OPENAI_API_KEY || undefined,
     GOOGLE_GENERATIVE_AI_API_KEY: e.GOOGLE_GENERATIVE_AI_API_KEY || undefined,
+    DEEPSEEK_API_KEY: e.DEEPSEEK_API_KEY || undefined,
     AI_GATEWAY_API_KEY: e.AI_GATEWAY_API_KEY || undefined,
     OTEL_EXPORTER_OTLP_ENDPOINT: e.OTEL_EXPORTER_OTLP_ENDPOINT || undefined,
     LANGFUSE_PUBLIC_KEY: e.LANGFUSE_PUBLIC_KEY || undefined,
@@ -67,7 +69,8 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
     env.AI_GATEWAY_API_KEY ||
     (provider === 'anthropic' && env.ANTHROPIC_API_KEY) ||
     (provider === 'openai' && env.OPENAI_API_KEY) ||
-    (provider === 'google' && env.GOOGLE_GENERATIVE_AI_API_KEY);
+    (provider === 'google' && env.GOOGLE_GENERATIVE_AI_API_KEY) ||
+    (provider === 'deepseek' && env.DEEPSEEK_API_KEY);
   if (!hasKey && !env.AI_TEST_MODE) {
     throw new Error(
       `AI_MODEL=${env.AI_MODEL} but no API key for "${provider}" is set (or AI_GATEWAY_API_KEY). See .env.example.`,

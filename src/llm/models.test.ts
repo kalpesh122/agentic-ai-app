@@ -9,11 +9,13 @@ describe('model ids', () => {
       id: 'claude-sonnet-5',
       full: 'anthropic/claude-sonnet-5',
     });
+    expect(parseModelId('deepseek/deepseek-v4-flash').provider).toBe('deepseek');
     expect(() => parseModelId('mistral/large')).toThrow(/Unsupported provider/);
     expect(() => parseModelId('claude-sonnet-5')).toThrow(/provider\/model/);
   });
   it('finds registry entries and prices them', () => {
     expect(findModel('openai/gpt-5.6-terra')?.inputPerMillion).toBe(2);
+    expect(findModel('deepseek/deepseek-v4-flash')?.outputPerMillion).toBe(1.32);
     const cost = estimateCost('anthropic/claude-sonnet-5', {
       inputTokens: 1_000_000,
       outputTokens: 100_000,
