@@ -59,6 +59,22 @@ export const MODELS: readonly ModelInfo[] = [
     outputPerMillion: 3.75,
     notes: 'Promotional pricing through 2026-12-31',
   },
+  // DeepSeek prices are the peak, cache-miss rates so the cost cap never under-counts;
+  // off-peak (outside 01:00-04:00 and 06:00-10:00 UTC weekdays) is half, cache hits ~30x cheaper.
+  {
+    provider: 'deepseek',
+    id: 'deepseek-v4-flash',
+    inputPerMillion: 0.44,
+    outputPerMillion: 1.32,
+    notes: 'Cheapest capable model; 1M context; thinking on by default',
+  },
+  {
+    provider: 'deepseek',
+    id: 'deepseek-v4-pro',
+    inputPerMillion: 1.32,
+    outputPerMillion: 3.96,
+    notes: 'DeepSeek flagship; 1M context',
+  },
 ];
 
 export interface ParsedModelId {
